@@ -1,0 +1,84 @@
+<?php
+@include("includes/db.php");
+@include("includes/top_header.php");
+@include("includes/header.php");
+@include("includes/menu.php");
+@include("Settings.class.php");
+
+// Default values
+$ID = NULL;
+$name = NULL;
+$ButtonValue = 'Submit';
+
+// Handle form submission
+if(isset($_POST['update_type'])){
+
+    $response = Settings::add_update_type($conn, $_POST);
+
+    if($response){
+        echo "<script>
+        alert('Company Type Updated Successfully');
+        window.location.href='view_type.php';
+        </script>";
+    } else {
+        echo "<script>alert('Error');</script>";
+    }
+}
+
+// If editing an existing type
+if(isset($_GET['id'])){
+    $ObjData = Settings::get_types($conn, $_GET['id']);
+
+    if($ObjData){
+        $ID      = $ObjData[0]->id;
+        $name    = $ObjData[0]->name;
+        $ButtonValue = 'Update';
+    }
+}
+?>
+
+<main class="main-wrapper">
+<div class="form-elements-wrapper mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+
+      <div class="card-style mb-30">
+
+        <!-- Header -->
+        <div class="d-flex align-items-center justify-content-between mb-25 p-3"
+             style="background:#f5f7ff; border-radius:8px;">
+          <h4 style="margin:0; font-weight:600;">
+            <i class="lni lni-briefcase me-2"></i> Update Company Type
+          </h4>
+        </div>
+
+        <hr style="margin-top:0;">
+
+        <form method="POST">
+          <?php if($ID != NULL){ ?>
+            <input type="hidden" name="id" value="<?php echo $ID; ?>">
+          <?php } ?>
+
+          <!-- Type Name -->
+          <div class="input-style-2">
+            <label>Company Type Name</label>
+            <input type="text" name="type_name" value="<?php echo $name; ?>" placeholder="Enter Company Type Name" required />
+            <span class="icon"><i class="lni lni-briefcase"></i></span>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="button-group mt-3 text-center">
+            <button type="submit" name="update_type" class="main-btn primary-btn btn-hover">
+              <?php echo $ButtonValue; ?>
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<?php @include("includes/footer.php"); ?>
+</main>
